@@ -6,7 +6,7 @@ export interface Tab {
 }
 
 export interface TabGroup {
-  id: string
+  id: number
   title: string
   collapsed: boolean
   color: string

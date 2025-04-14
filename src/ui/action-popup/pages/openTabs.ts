@@ -8,7 +8,7 @@ function getConfigTabs(): TabGroup[] {
     ? uploadedConfig
     : [
         {
-          id: "example-group",
+          id: 122,
           title: "Example Group",
           collapsed: false,
           color: "blue",
