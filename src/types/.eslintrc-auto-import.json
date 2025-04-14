@@ -364,6 +364,7 @@
     "onElementRemoval": true,
     "useCountdown": true,
     "applyTheme": true,
-    "createRef": true
+    "createRef": true,
+    "download": true
   }
 }

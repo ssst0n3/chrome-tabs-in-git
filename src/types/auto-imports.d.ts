@@ -45,6 +45,7 @@ declare global {
   const defineComponent: typeof import('vue')['defineComponent']
   const definePage: typeof import('vue-router/auto')['definePage']
   const defineStore: typeof import('pinia')['defineStore']
+  const download: typeof import('../utils/file')['download']
   const eagerComputed: typeof import('@vueuse/core')['eagerComputed']
   const effectScope: typeof import('vue')['effectScope']
   const extPay: typeof import('../utils/payment/extPay')['extPay']
@@ -404,6 +405,7 @@ declare module 'vue' {
     readonly defineComponent: UnwrapRef<typeof import('vue')['defineComponent']>
     readonly definePage: UnwrapRef<typeof import('vue-router/auto')['definePage']>
     readonly defineStore: UnwrapRef<typeof import('pinia')['defineStore']>
+    readonly download: UnwrapRef<typeof import('../utils/file')['download']>
     readonly eagerComputed: UnwrapRef<typeof import('@vueuse/core')['eagerComputed']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
     readonly extendRef: UnwrapRef<typeof import('@vueuse/core')['extendRef']>

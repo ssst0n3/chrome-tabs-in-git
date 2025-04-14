@@ -12,7 +12,7 @@ const [major, minor, patch, label = "0"] = version
 
 export default {
   author: {
-    email: "mubaidr@gmail.com",
+    email: "ssst0n3@gmail.com",
   },
   name: env.mode === "staging" ? `[INTERNAL] ${name}` : displayName || name,
   description,
@@ -22,9 +22,9 @@ export default {
   version_name: version,
   manifest_version: 3,
   // key: '',
-  action: {
-    default_popup: "src/ui/action-popup/index.html",
-  },
+  // action: {
+  //   default_popup: "src/ui/action-popup/index.html",
+  // },
   background: {
     service_worker: "src/background/index.ts",
     type: "module",
@@ -40,10 +40,17 @@ export default {
     default_path: "src/ui/side-panel/index.html",
   },
   devtools_page: "src/devtools/index.html",
-  options_page: "src/ui/options-page/index.html",
+  // options_page: "src/ui/options-page/index.html",
+  options_ui: {
+    page: "src/ui/action-popup/index.html",
+    open_in_tab: true,
+  },
+  action: {
+    default_title: "chrome tabs in git"
+  },
   offline_enabled: true,
   host_permissions: ["<all_urls>"],
-  permissions: ["storage", "tabs", "background", "sidePanel"],
+  permissions: ["storage", "tabs", "background", "sidePanel", "downloads", "tabs", "tabGroups"],
   web_accessible_resources: [
     {
       resources: [

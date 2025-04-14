@@ -10,7 +10,12 @@ const iframe = new DOMParser().parseFromString(
 ).body.firstElementChild
 
 if (iframe) {
-  document.body?.append(iframe)
+  // document.body?.append(iframe);
+  // window.addEventListener("message", (event) => {
+  //   if (event.data?.action === "removeIframe") {
+  //     iframe.remove();
+  //   }
+  // });
 }
 
 self.onerror = function (message, source, lineno, colno, error) {

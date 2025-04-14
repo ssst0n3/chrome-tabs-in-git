@@ -1,4 +1,5 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+</script>
 
 <template>
   <div class="navbar bg-primary text-primary-content p-2">
@@ -12,7 +13,7 @@
           alt="logo"
           class="h-8 w-auto"
         />
-        <div class="text-base font-semibold">Vite Vue 3 Chrome Extension</div>
+        <div class="text-base font-semibold">Chrome Tabs in Git</div>
       </RouterLink>
     </div>
     <div class="flex-none">
@@ -38,7 +39,9 @@
               tabindex="0"
               class="dropdown-content menu bg-white rounded-box z-[1] shadow-lg"
             >
-              <li><ThemeSwitch /></li>
+              <li>
+                <ThemeSwitch />
+              </li>
               <li></li>
               <li>
                 <RouterLink

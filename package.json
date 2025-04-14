@@ -64,7 +64,7 @@
     "web-ext": "^8.4.0",
     "webext-bridge": "^6.0.1"
   },
-  "displayName": "Vite Vue 3 Chrome Extension",
+  "displayName": "Chrome Tabs in Git",
   "name": "vite-vue3-browser-extension-v3",
   "overrides": {
     "@crxjs/vite-plugin": "$@crxjs/vite-plugin"
