@@ -8,6 +8,23 @@ export async function recordTabs(): Promise<void> {
     const tabs = await chrome.tabs.query({})
     const groups = await chrome.tabGroups.query({})
 
+    // Handle tabs that are not grouped
+    const ungroupedTabs: TabGroup = {
+      id: -1, // Use a special ID for ungrouped tabs
+      title: "Ungrouped",
+      collapsed: false,
+      color: "grey",
+      windowId: tabs[0]?.windowId || -1,
+      open: true,
+      tabs: tabs
+        .filter((tab) => tab.groupId === chrome.tabGroups.TAB_GROUP_ID_NONE)
+        .map((tab) => ({
+          title: tab.title || "",
+          url: tab.url || "",
+          group: "Ungrouped",
+        } as Tab)),
+    };
+
     const tabGroups: TabGroup[] = groups.map((group) => {
       return {
         id: group.id,
@@ -25,6 +42,11 @@ export async function recordTabs(): Promise<void> {
           } as Tab)),
       } as TabGroup;
     })
+
+    // Include ungrouped tabs if any exist
+    if (ungroupedTabs.tabs.length > 0) {
+      tabGroups.push(ungroupedTabs);
+    }
 
     const jsonContent = JSON.stringify(tabGroups, null, 2)
     await download(jsonContent, "tabs.json")

@@ -35,7 +35,8 @@ chrome.runtime.onInstalled.addListener(async (opt) => {
   if (opt.reason === "update") {
     chrome.tabs.create({
       active: true,
-      url: chrome.runtime.getURL("src/ui/setup/index.html#/setup/update"),
+      // url: chrome.runtime.getURL("src/ui/setup/index.html#/setup/update"),
+      url: chrome.runtime.getURL("src/ui/action-popup/index.html"),
     })
 
     return

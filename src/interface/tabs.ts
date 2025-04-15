@@ -9,7 +9,7 @@ export interface TabGroup {
   id: number
   title: string
   collapsed: boolean
-  color: string
+  color: chrome.tabGroups.Color
   windowId: number
   open: boolean
   tabs: Tab[]

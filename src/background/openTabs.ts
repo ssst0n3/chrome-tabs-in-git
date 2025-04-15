@@ -1,22 +1,18 @@
 import { TabGroup } from "src/interface/tabs"
 
 export async function openGroupTabs(tabGroups: TabGroup[]): Promise<void> {
-  const windowIdMap = new Map<number, number>() // Map to track windowId for each tabGroup
+  const windowIdMap = new Map<number, number>()
 
-  // BUG: do not use async to prevent windowIdMap.set being called before windowIdMap.get
   for (const tabGroup of tabGroups) {
     if (tabGroup.open) {
       let newWindowTabID: number = -1
       let windowID: number | undefined = windowIdMap.get(tabGroup.windowId)
-      console.log(
-        `[DEBUG] tabGroup.windowId = ${tabGroup.windowId}, windowIdMap.get(${tabGroup.windowId})=${windowIdMap.get(tabGroup.windowId)}`,
-      )
       if (windowID === undefined) {
         const windowExists =
           tabGroup.windowId !== undefined
             ? (await chrome.windows.getAll()).some(
-              (window) => window.id === tabGroup.windowId,
-            )
+                (window) => window.id === tabGroup.windowId,
+              )
             : false
 
         if (windowExists) {
@@ -29,37 +25,58 @@ export async function openGroupTabs(tabGroups: TabGroup[]): Promise<void> {
 
         if (windowID !== undefined && tabGroup.windowId !== undefined) {
           windowIdMap.set(tabGroup.windowId, windowID)
-          console.log(
-            `[DEBUG] windowIdMap.set(${tabGroup.windowId}, ${windowID})`,
-          )
         }
       }
 
-      const tabIds: number[] = []
-      for (const tab of tabGroup.tabs) {
-        const createdTab = await chrome.tabs.create({
-          url: tab.url,
-          windowId: windowID,
-        })
-        if (createdTab.id !== undefined) {
-          tabIds.push(createdTab.id)
-        }
-      }
-      if (tabIds.length > 0) {
-        const groupId = await chrome.tabs.group({
-          tabIds: tabIds as [number, ...number[]],
-          createProperties: {
-            windowId: windowID,
-          },
-        })
-        await chrome.tabGroups.update(groupId, {
-          title: tabGroup.title,
-          collapsed: tabGroup.collapsed,
-        })
+      if (tabGroup.id === -1) {
+        await createTabsUngrouped(tabGroup, windowID)
+      } else {
+        await createTabsGroup(tabGroup, windowID)
       }
       if (newWindowTabID !== -1) {
-        // await chrome.tabs.remove(newWindowTabID)
+        await chrome.tabs.remove(newWindowTabID)
       }
     }
+  }
+}
+
+async function createTabsGroup(
+  tabGroup: TabGroup,
+  windowID: number | undefined,
+) {
+  const tabIds: number[] = []
+  for (const tab of tabGroup.tabs) {
+    const createdTab = await chrome.tabs.create({
+      url: tab.url,
+      windowId: windowID,
+    })
+    if (createdTab.id !== undefined) {
+      tabIds.push(createdTab.id)
+    }
+  }
+  if (tabIds.length > 0) {
+    const groupId = await chrome.tabs.group({
+      tabIds: tabIds as [number, ...number[]],
+      createProperties: {
+        windowId: windowID,
+      },
+    })
+    await chrome.tabGroups.update(groupId, {
+      title: tabGroup.title,
+      collapsed: tabGroup.collapsed,
+      color: tabGroup.color,
+    })
+  }
+}
+
+async function createTabsUngrouped(
+  tabGroup: TabGroup,
+  windowID: number | undefined,
+) {
+  for (const tab of tabGroup.tabs) {
+    await chrome.tabs.create({
+      url: tab.url,
+      windowId: windowID,
+    })
   }
 }
