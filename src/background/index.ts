@@ -5,15 +5,13 @@
 import { openGroupTabs } from "src/background/openTabs"
 
 chrome.action.onClicked.addListener((tab) => {
-  chrome.runtime.openOptionsPage();
-});
+  chrome.runtime.openOptionsPage()
+})
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log("[DEBUG] message=", message)
   if (message.action === "open-tabs") {
-    openGroupTabs(message.data);
-    // Send a response back to the content script
-    sendResponse()
+    openGroupTabs(message.data).then((r) => sendResponse())
     return true // Ensure the listener returns a boolean
   }
   return false // Return false if the message type doesn't match

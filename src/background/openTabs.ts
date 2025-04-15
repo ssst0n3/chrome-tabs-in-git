@@ -1,27 +1,27 @@
 import { TabGroup } from "src/interface/tabs"
 
-export function openGroupTabs(tabGroups: TabGroup[]): void {
+export async function openGroupTabs(tabGroups: TabGroup[]): Promise<void> {
   const windowIdMap = new Map<number, number>() // Map to track windowId for each tabGroup
 
-  tabGroups.forEach(async (tabGroup) => {
+  // BUG: do not use async to prevent windowIdMap.set being called before windowIdMap.get
+  for (const tabGroup of tabGroups) {
     if (tabGroup.open) {
       let newWindowTabID: number = -1
-      let windowID: number | undefined = windowIdMap.get(
-        tabGroup.windowId || -1,
+      let windowID: number | undefined = windowIdMap.get(tabGroup.windowId)
+      console.log(
+        `[DEBUG] tabGroup.windowId = ${tabGroup.windowId}, windowIdMap.get(${tabGroup.windowId})=${windowIdMap.get(tabGroup.windowId)}`,
       )
-
-      if (!windowID) {
+      if (windowID === undefined) {
         const windowExists =
           tabGroup.windowId !== undefined
             ? (await chrome.windows.getAll()).some(
-                (window) => window.id === tabGroup.windowId,
-              )
+              (window) => window.id === tabGroup.windowId,
+            )
             : false
 
         if (windowExists) {
           windowID = tabGroup.windowId
         } else {
-          ;(await chrome.windows.create())?.id
           const newWindow = await chrome.windows.create()
           newWindowTabID = newWindow?.tabs?.[0]?.id || -1
           windowID = newWindow?.id
@@ -29,6 +29,9 @@ export function openGroupTabs(tabGroups: TabGroup[]): void {
 
         if (windowID !== undefined && tabGroup.windowId !== undefined) {
           windowIdMap.set(tabGroup.windowId, windowID)
+          console.log(
+            `[DEBUG] windowIdMap.set(${tabGroup.windowId}, ${windowID})`,
+          )
         }
       }
 
@@ -55,8 +58,8 @@ export function openGroupTabs(tabGroups: TabGroup[]): void {
         })
       }
       if (newWindowTabID !== -1) {
-        await chrome.tabs.remove(newWindowTabID)
+        // await chrome.tabs.remove(newWindowTabID)
       }
     }
-  })
+  }
 }
